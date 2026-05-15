@@ -1,5 +1,4 @@
 # StoryBuddy
-# StoryBuddy
 
 > **孩子是故事的导演，AI 是温柔的副导演**
 
