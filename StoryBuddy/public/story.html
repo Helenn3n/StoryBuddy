@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>故事创作 - StoryBuddy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/story.css">
+</head>
+<body>
+    <div class="story-container">
+        <!-- Header with back button -->
+        <header class="story-header">
+            <button id="backBtn" class="back-btn" title="返回首页">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                返回
+            </button>
+            <div class="header-title">
+                <h1>🌟 故事创作中...</h1>
+                <p class="subtitle" id="childInfo"></p>
+            </div>
+        </header>
+
+        <!-- Story messages display area -->
+        <div class="story-messages" id="storyMessages">
+            <!-- Messages will be dynamically added here -->
+        </div>
+
+        <!-- Input area -->
+        <div class="story-input-container">
+            <div class="story-input-wrapper">
+                <textarea 
+                    id="messageInput" 
+                    class="story-input" 
+                    placeholder="说说你的故事想法..."
+                    rows="1"
+                ></textarea>
+                <button id="sendBtn" class="send-btn" title="发送">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-hints">
+                <span>按 Enter 发送，Shift + Enter 换行</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/story.js"></script>
+</body>
+</html>

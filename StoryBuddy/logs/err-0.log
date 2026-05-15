@@ -1,0 +1,1 @@
+2026-04-02 15:32:57 +08:00: Image generation failed: 429 {"code":"Throttling.RateQuota","message":"Requests rate limit exceeded, please try again later. For details, see: https://help.aliyun.com/zh/model-studio/error-code#rate-limit","request_id":"e08d40d3-566e-9f20-955b-856a0f3c3351"}

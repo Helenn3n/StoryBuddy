@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryBuddy - 故事伙伴 | 儿童AI故事共创应用</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF8F3;
+            --warm-white: #FFFBF7;
+            --soft-coral: #FFB5A7;
+            --coral-deep: #E07A5F;
+            --sage: #81B29A;
+            --sage-light: #A8D5BA;
+            --lavender: #B8A9C9;
+            --lavender-soft: #D4C5E2;
+            --golden: #F2CC8F;
+            --golden-light: #F9E4B7;
+            --charcoal: #3D405B;
+            --charcoal-light: #5A5D7A;
+            --shadow-soft: rgba(61, 64, 91, 0.08);
+            --shadow-medium: rgba(61, 64, 91, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* Floating Background Shapes */
+        .floating-shape {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--soft-coral);
+            top: 10%;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--sage-light);
+            top: 40%;
+            right: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: var(--lavender-soft);
+            bottom: 20%;
+            left: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            background: rgba(253, 248, 243, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(184, 169, 201, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            box-shadow: 0 4px 30px var(--shadow-soft);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--soft-coral) 0%, var(--coral-deep) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+        }
+
+        .logo-text {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.5rem;
+            color: var(--charcoal);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--charcoal-light);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--coral-deep);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--coral-deep);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-light) 100%);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(129, 178, 154, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(129, 178, 154, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--warm-white);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--coral-deep);
+            font-weight: 500;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px var(--shadow-soft);
+            border: 1px solid rgba(255, 181, 167, 0.3);
+        }
+
+        .hero-badge::before {
+            content: '✨';
+        }
+
+        .hero h1 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--coral-deep) 0%, var(--soft-coral) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            color: var(--charcoal-light);
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .hero-tagline strong {
+            color: var(--coral-deep);
+            font-weight: 500;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--charcoal-light);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.9;
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--coral-deep) 0%, var(--soft-coral) 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(224, 122, 95, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(224, 122, 95, 0.45);
+        }
+
+        .btn-secondary {
+            background: var(--warm-white);
+            color: var(--charcoal);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid var(--lavender-soft);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--lavender-soft);
+            transform: translateY(-3px);
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 2rem;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-label {
+            display: inline-block;
+            background: var(--golden-light);
+            color: var(--coral-deep);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--charcoal-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Creative Brief Section */
+        .creative-brief {
+            background: linear-gradient(180deg, var(--cream) 0%, var(--warm-white) 100%);
+        }
+
+        .brief-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brief-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--soft-coral), var(--sage), var(--lavender), var(--golden));
+        }
+
+        .brief-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .brief-text h3 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.8rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .brief-text p {
+            color: var(--charcoal-light);
+            font-size: 1.05rem;
+            line-height: 2;
+        }
+
+        .brief-highlight {
+            background: linear-gradient(135deg, var(--golden-light) 0%, var(--soft-coral) 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .brief-highlight .quote {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .brief-highlight .author {
+            color: var(--charcoal-light);
+            font-size: 0.9rem;
+        }
+
+        /* Background Section */
+        .background-section {
+            background: var(--warm-white);
+        }
+
+        .pain-points {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .pain-point-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .pain-point-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px var(--shadow-medium);
+        }
+
+        .pain-point-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .pain-point-card:nth-child(1) .pain-point-icon {
+            background: linear-gradient(135deg, var(--soft-coral) 0%, var(--coral-deep) 100%);
+        }
+
+        .pain-point-card:nth-child(2) .pain-point-icon {
+            background: linear-gradient(135deg, var(--sage-light) 0%, var(--sage) 100%);
+        }
+
+        .pain-point-card:nth-child(3) .pain-point-icon {
+            background: linear-gradient(135deg, var(--lavender-soft) 0%, var(--lavender) 100%);
+        }
+
+        .pain-point-card h4 {
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .pain-point-card p {
+            color: var(--charcoal-light);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* Product Section */
+        .product-section {
+            background: linear-gradient(180deg, var(--warm-white) 0%, var(--cream) 100%);
+        }
+
+        .differentiators {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .diff-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .diff-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px var(--shadow-medium);
+        }
+
+        .diff-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--coral-deep) 0%, var(--soft-coral) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .diff-card h4 {
+            font-size: 1.1rem;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+        }
+
+        .diff-card p {
+            font-size: 0.9rem;
+            color: var(--charcoal-light);
+            line-height: 1.7;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: var(--cream);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 50px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--soft-coral), var(--sage));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card:nth-child(1) .feature-icon {
+            background: linear-gradient(135deg, #FFE5E0 0%, var(--soft-coral) 100%);
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: linear-gradient(135deg, #E0F0E8 0%, var(--sage-light) 100%);
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: linear-gradient(135deg, #E8E0F0 0%, var(--lavender-soft) 100%);
+        }
+
+        .feature-card:nth-child(4) .feature-icon {
+            background: linear-gradient(135deg, #FFF5E0 0%, var(--golden-light) 100%);
+        }
+
+        .feature-card h3 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.4rem;
+            color: var(--charcoal);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--charcoal-light);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .feature-example {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            font-size: 0.85rem;
+            color: var(--charcoal-light);
+            border-left: 3px solid var(--sage);
+        }
+
+        /* Value Section */
+        .value-section {
+            background: var(--warm-white);
+        }
+
+        .value-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .value-tab {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            border: 2px solid var(--lavender-soft);
+            background: white;
+            color: var(--charcoal);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .value-tab.active {
+            background: linear-gradient(135deg, var(--sage) 0%, var(--sage-light) 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .value-content {
+            display: none;
+        }
+
+        .value-content.active {
+            display: block;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .value-item {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 30px var(--shadow-soft);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .value-number {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--golden) 0%, var(--coral-deep) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .value-item h4 {
+            font-size: 1rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .value-item p {
+            font-size: 0.9rem;
+            color: var(--charcoal-light);
+            line-height: 1.6;
+        }
+
+        /* Architecture Section */
+        .architecture-section {
+            background: linear-gradient(180deg, var(--cream) 0%, var(--warm-white) 100%);
+        }
+
+        .architecture-diagram {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.15);
+        }
+
+        .arch-layers {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .arch-layer {
+            background: linear-gradient(135deg, var(--cream) 0%, white 100%);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            border: 2px solid rgba(184, 169, 201, 0.2);
+            position: relative;
+        }
+
+        .arch-layer::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            border-radius: 16px 0 0 16px;
+        }
+
+        .arch-layer:nth-child(1)::before {
+            background: linear-gradient(180deg, var(--soft-coral), var(--coral-deep));
+        }
+
+        .arch-layer:nth-child(2)::before {
+            background: linear-gradient(180deg, var(--sage-light), var(--sage));
+        }
+
+        .arch-layer:nth-child(3)::before {
+            background: linear-gradient(180deg, var(--lavender-soft), var(--lavender));
+        }
+
+        .arch-layer h4 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.3rem;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+        }
+
+        .arch-layer p {
+            color: var(--charcoal-light);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .arch-components {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .arch-component {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--charcoal);
+            border: 1px solid var(--lavender-soft);
+        }
+
+        /* Demo Section */
+        .demo-section {
+            background: var(--warm-white);
+        }
+
+        .demo-showcase {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.15);
+        }
+
+        .demo-image {
+            aspect-ratio: 16/10;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--lavender-soft) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .demo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0;
+}
+
+        .demo-content {
+            padding: 1.5rem;
+        }
+
+        .demo-content h4 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .demo-content p {
+            font-size: 0.9rem;
+            color: var(--charcoal-light);
+        }
+
+        /* Carousel Styles */
+        .carousel-section {
+            margin-top: 4rem;
+        }
+
+        .carousel-container {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 15px 50px var(--shadow-soft);
+            border: 1px solid rgba(184, 169, 201, 0.15);
+            overflow: hidden;
+        }
+
+        .carousel-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            position: relative;
+        }
+
+        .carousel-content-top {
+            padding: 2rem 2.5rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--warm-white) 0%, white 100%);
+        }
+
+        .carousel-content-top h4 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 1.5rem;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+        }
+
+        .carousel-content-top p {
+            font-size: 1.2rem;
+            color: var(--coral-deep);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        .carousel-desc {
+            font-size: 0.95rem;
+            color: var(--charcoal-light);
+            line-height: 1.6;
+        }
+
+        .carousel-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--cream) 0%, var(--lavender-soft) 100%);
+        }
+
+        .carousel-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 60%;
+            transform: translateY(-50%);
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: var(--charcoal);
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow-soft);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: var(--sage);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-prev {
+            left: 20px;
+        }
+
+        .carousel-next {
+            right: 20px;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 1.5rem;
+            background: white;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--lavender-soft);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: var(--coral-deep);
+            transform: scale(1.2);
+        }
+
+        .indicator:hover {
+            background: var(--sage);
+        }
+
+        @media (max-width: 768px) {
+            .carousel-content-top {
+                padding: 1.5rem;
+            }
+            
+            .carousel-content-top h4 {
+                font-size: 1.3rem;
+            }
+            
+            .carousel-content-top p {
+                font-size: 1.1rem;
+            }
+            
+            .carousel-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            color: white;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand .logo-text {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .footer-links h5 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--golden);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--soft-coral);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .brief-content {
+                grid-template-columns: 1fr;
+            }
+
+            .differentiators {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-showcase {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .value-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Shapes -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <div class="logo-icon">📚</div>
+                <span class="logo-text">StoryBuddy</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#brief">创意简介</a></li>
+                <li><a href="#background">背景痛点</a></li>
+                <li><a href="#product">产品介绍</a></li>
+                <li><a href="#features">核心功能</a></li>
+                <li><a href="#value">产品价值</a></li>
+            </ul>
+            <a href="index.html" class="nav-cta">🚀 开始体验</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>StoryBuddy <span>故事伙伴</span></h1>
+            <p class="hero-tagline">
+                <strong>"孩子是故事的导演，AI是温柔的副导演"</strong>
+            </p>
+            <p class="hero-description">
+                以儿童为主导、AI为引导者的对话式故事共创应用。让3-8岁孩子在与AI的互动中，
+                培养逻辑思维、语言表达和创造力，共同创作属于自己的绘本故事。
+            </p>
+            <div class="hero-cta-group">
+                <a href="index.html" class="btn-primary">
+                    🚀 开始创作
+                </a>
+                <a href="#brief" class="btn-secondary">
+                    📖 了解更多
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Creative Brief Section -->
+    <section id="brief" class="creative-brief">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">一句话定位</h2>
+            </div>
+            <div class="brief-card fade-in">
+                <div class="brief-content">
+                    <div class="brief-text">
+                        <h3>儿童AI故事共创应用</h3>
+                        <p>
+                            以儿童为主导、AI为引导者的对话式故事共创应用。
+                            <strong>AI是故事伙伴，而非故事生成器。</strong>
+                            我们相信每个孩子都是天生的故事家，AI只是温柔地陪伴和引导，
+                            让孩子的想象力自由绽放。
+                        </p>
+                    </div>
+                    <div class="brief-highlight">
+                        <p class="quote">"孩子是故事的导演，AI是温柔的副导演"</p>
+                        <p class="author">— StoryBuddy 核心理念</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Background Section -->
+    <section id="background" class="background-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">为什么需要故事伙伴？</h2>
+                <p class="section-subtitle">
+                    4-8岁是儿童内在叙事爆发期，但大多数创意都在24小时内消散
+                </p>
+            </div>
+            <div class="pain-points">
+                <div class="pain-point-card fade-in">
+                    <div class="pain-point-icon">🧠</div>
+                    <h4>叙事爆发期的创意流失</h4>
+                    <p>
+                        儿童大脑每天产生数十个故事片段，但因无人倾听而在24小时内永久消散。
+                        故事在脑中跳跃式推进（"公主→恐龙→冰淇淋"），缺乏因果衔接，
+                        错失逻辑思维发展的关键训练机会。
+                    </p>
+                </div>
+                <div class="pain-point-card fade-in">
+                    <div class="pain-point-icon">⏰</div>
+                    <h4>家长陪伴时间有限</h4>
+                    <p>
+                        家长因工作繁忙，每日可用于亲子陪伴的时间较为有限。
+                        在短暂的陪伴时段内，多数情况仅停留在形式上的"陪着"，
+                        真正实现高质量互动的情形较为稀缺。
+                    </p>
+                </div>
+                <div class="pain-point-card fade-in">
+                    <div class="pain-point-icon">🎨</div>
+                    <h4>缺乏有效引导与记录</h4>
+                    <p>
+                        面对儿童提出的部分创意性想法，家长往往难以有效引导，
+                        且缺乏便捷手段进行实时记录与留存。
+                        珍贵的童年创意无法被保存和回顾。
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-header fade-in" style="margin-top: 4rem;">
+                <h2 class="section-title">市场现状分析</h2>
+            </div>
+            <div class="brief-card fade-in" style="margin-top: 2rem;">
+                <div class="brief-content">
+                    <div class="brief-text">
+                        <h3>现有应用的问题</h3>
+                        <p>
+                            <strong>第一类：</strong>面向专业绘本创作者，旨在提升创作效率，
+                            但操作复杂，不适合儿童直接使用。<br><br>
+                            <strong>第二类：</strong>儿童提供想法，家长输入关键词或上传涂鸦，
+                            AI主导完成故事。缺陷在于儿童仅提供初始素材，缺乏持续互动与创作引导。
+                        </p>
+                    </div>
+                    <div class="brief-highlight">
+                        <p class="quote">"市面上缺乏一款儿童可以无门槛直接使用的对话式故事共创应用"</p>
+                        <p class="author">— StoryBuddy 填补的市场空白</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section id="product" class="product-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">核心差异点</h2>
+                <p class="section-subtitle">
+                    StoryBuddy 与市面其他绘本创作应用的本质区别
+                </p>
+            </div>
+            <div class="differentiators">
+                <div class="diff-card fade-in">
+                    <div class="diff-number">1</div>
+                    <h4>儿童无门槛直接使用</h4>
+                    <p>
+                        无需输入文字、图像等需要家长代为执行的操作，
+                        儿童可直接通过语音唤醒，告知想法即可开始故事共创。
+                    </p>
+                </div>
+                <div class="diff-card fade-in">
+                    <div class="diff-number">2</div>
+                    <h4>始终以儿童为主导</h4>
+                    <p>
+                        创作过程始终以儿童为主导，AI仅起到引导作用，
+                        辅助儿童一步步完成整个故事的创作。
+                    </p>
+                </div>
+                <div class="diff-card fade-in">
+                    <div class="diff-number">3</div>
+                    <h4>兼顾娱乐与教育</h4>
+                    <p>
+                        在故事共创的过程中培养孩子表达、逻辑思维等能力，
+                        实现寓教于乐的目标。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">四大核心功能</h2>
+                <p class="section-subtitle">
+                    从语音互动到成长记录，全方位陪伴孩子创作
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎤</div>
+                    <h3>AI故事引导</h3>
+                    <p>
+                        为孩子多提供表达机会。AI不直接续写故事，而是通过提问引导孩子思考：
+                        "你觉得这时候小动物们会怎么帮助她呢？"
+                    </p>
+                    <div class="feature-example">
+                        孩子说："白雪公主被坏皇后追到森林里..."<br>
+                        AI回应："哇！你让小兔子用胡萝卜搭了座桥，这个主意太有创意了！"
+                    </div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎨</div>
+                    <h3>即时插图生成</h3>
+                    <p>
+                        关键情节节点自动生成故事插图，提供不同风格来防备审美疲劳。
+                        AI会根据插图进行引导，激发孩子想象力。
+                    </p>
+                    <div class="feature-example">
+                        "公主推开糖果屋的门" → 自动生成插图<br>
+                        AI："你觉得图片里还缺什么？要不要加一只偷偷看热闹的小猫？"
+                    </div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🧠</div>
+                    <h3>逻辑引导引擎</h3>
+                    <p>
+                        基于儿童年龄设计不同引导级别，通过提问形式培养逻辑思维能力。
+                    </p>
+                    <div class="feature-example">
+                        • 5岁："糖果屋的门打开了，接下来会发生什么？"<br>
+                        • 6岁："小红帽为什么没听妈妈的话走大路呢？"<br>
+                        • 7岁："如果这次白雪公主没吃苹果，故事会怎么不一样？"
+                    </div>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📖</div>
+                    <h3>成长记录</h3>
+                    <p>
+                        自动生成"故事手账"，记录孩子的每一个创意瞬间，
+                        增强孩子成就感，让家长见证孩子的成长轨迹。
+                    </p>
+                    <div class="feature-example">
+                        保存所有创作的故事、生成的插图、对话记录，
+                        形成完整的成长档案，随时回顾珍贵回忆。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Section -->
+    <section id="value" class="value-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">多维度价值体系</h2>
+            </div>
+            <div class="value-tabs fade-in">
+                <button class="value-tab active" onclick="showValue('social')">社会价值</button>
+                <button class="value-tab" onclick="showValue('commercial')">商业价值</button>
+                <button class="value-tab" onclick="showValue('potential')">潜在价值</button>
+            </div>
+
+            <div id="social" class="value-content active">
+                <div class="value-grid">
+                    <div class="value-item">
+                        <div class="value-number">1</div>
+                        <div>
+                            <h4>创造力激发</h4>
+                            <p>通过选择角色和情节，孩子能发挥无限创意，显著增强创造力。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">2</div>
+                        <div>
+                            <h4>个性化学习</h4>
+                            <p>根据孩子兴趣选择，获得更加个性化的学习和创作体验。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">3</div>
+                        <div>
+                            <h4>技术技能发展</h4>
+                            <p>与AI工具交互，学习基本技术操作和理解AI应用。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">4</div>
+                        <div>
+                            <h4>沟通和语言能力</h4>
+                            <p>将想法转化为故事，提升语言表达和沟通技巧。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">5</div>
+                        <div>
+                            <h4>问题解决技能</h4>
+                            <p>解决情节串联挑战，提高思维逻辑性和问题解决能力。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">6</div>
+                        <div>
+                            <h4>增强自信和责任感</h4>
+                            <p>参与创作让孩子感到自己是项目的重要部分，增强自信。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">7</div>
+                        <div>
+                            <h4>社会与情感学习</h4>
+                            <p>探索不同角色和情境，有助于情感发展和社会理解。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">8</div>
+                        <div>
+                            <h4>跨文化理解</h4>
+                            <p>接触多种文化背景元素，增进对不同文化的认识和尊重。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">9</div>
+                        <div>
+                            <h4>增进亲子关系</h4>
+                            <p>家长可与孩子共同回顾故事，增进亲子关系。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="commercial" class="value-content">
+                <div class="value-grid">
+                    <div class="value-item">
+                        <div class="value-number">1</div>
+                        <div>
+                            <h4>强付费意愿</h4>
+                            <p>受众群体为儿童及家长，兼顾娱乐与教育属性，用户付费意愿强烈。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">2</div>
+                        <div>
+                            <h4>多模型Token消耗</h4>
+                            <p>涉及ASR、TTS、Image Generation、LLM等模型能力，带动多方面token消耗。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="potential" class="value-content">
+                <div class="value-grid">
+                    <div class="value-item">
+                        <div class="value-number">1</div>
+                        <div>
+                            <h4>儿童创作社区</h4>
+                            <p>用户规模达一定水平后，构建儿童故事创作社区，孩子可分享作品、协同共创。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">2</div>
+                        <div>
+                            <h4>成长轨迹分析</h4>
+                            <p>AI对儿童创作内容进行结构化总结分析，帮助家长洞察孩子逻辑思维能力成长轨迹。</p>
+                        </div>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-number">3</div>
+                        <div>
+                            <h4>思辨能力提升</h4>
+                            <p>通过故事共创开展逻辑思维训练，有助于提升孩子未来作文写作、辩论表达等能力。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="architecture-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">三层架构设计</h2>
+                <p class="section-subtitle">
+                    交互层、服务层、持久化层协同工作
+                </p>
+            </div>
+            <div class="architecture-diagram fade-in">
+                <div class="arch-layers">
+                    <div class="arch-layer">
+                        <h4>🖥️ 交互层</h4>
+                        <p>用户直接接触的前端界面层，负责信息展示与用户输入</p>
+                        <div class="arch-components">
+                            <span class="arch-component">故事共创</span>
+                            <span class="arch-component">故事集</span>
+                            <span class="arch-component">儿童信息配置</span>
+                        </div>
+                    </div>
+                    <div class="arch-layer">
+                        <h4>⚙️ 服务层</h4>
+                        <p>系统的"大脑"和核心逻辑层，集成先进AI技术驱动应用功能</p>
+                        <div class="arch-components">
+                            <span class="arch-component">故事伙伴Agent</span>
+                            <span class="arch-component">LLM故事引导</span>
+                            <span class="arch-component">AIGC插图生成</span>
+                        </div>
+                    </div>
+                    <div class="arch-layer">
+                        <h4>💾 持久化层</h4>
+                        <p>数据存储层，负责数据保存、读取和管理</p>
+                        <div class="arch-components">
+                            <span class="arch-component">历史故事存储</span>
+                            <span class="arch-component">儿童信息记录</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">界面预览</h2>
+                <p class="section-subtitle">
+                    简洁友好的界面设计，让孩子轻松上手
+                </p>
+            </div>
+            <div class="demo-showcase">
+                <div class="demo-card fade-in">
+                    <div class="demo-image">
+                        <img src="images/demo/homepage.jpg" alt="主页面预览">
+                    </div>
+                    <div class="demo-content">
+                        <h4>主页面</h4>
+                        <p>展示故事集和小作者信息，清晰的管理界面让孩子轻松找到历史创作</p>
+                    </div>
+                </div>
+                <div class="demo-card fade-in">
+                    <div class="demo-image">
+                        <img src="images/demo/story.jpg" alt="故事共创页面预览">
+                    </div>
+                    <div class="demo-content">
+                        <h4>故事共创页面</h4>
+                        <p>对话式交互界面，AI温柔引导，孩子自由表达创意</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logic Guidance Engine Carousel -->
+            <div class="carousel-section fade-in" style="margin-top: 4rem;">
+                <div class="section-header" style="margin-bottom: 2rem;">
+                    <h3 style="font-family: 'ZCOOL KuaiLe', cursive; font-size: 1.8rem; color: var(--charcoal);">
+                        🧠 逻辑引导引擎
+                    </h3>
+                    <p class="section-subtitle">
+                        基于儿童年龄设计不同引导级别，培养逻辑思维能力
+                    </p>
+                </div>
+                
+                <div class="carousel-container">
+                    <div class="carousel-wrapper" id="logicCarousel">
+                        <!-- Slide 1 -->
+                        <div class="carousel-slide active">
+                            <div class="carousel-content-top">
+                                <h4>3-4岁，简单直接的提问</h4>
+                                <p>"接下来发生了什么呢？"</p>
+                                <span class="carousel-desc">引导孩子完整叙述故事，建立基本的故事结构意识</span>
+                            </div>
+                            <div class="carousel-image">
+                                <img src="images/demo/logic-4.jpg" alt="4岁引导示例">
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 2 -->
+                        <div class="carousel-slide">
+                            <div class="carousel-content-top">
+                                <h4>5-6岁，因果关系探索</h4>
+                                <p>"为什么会这样呢？"</p>
+                                <span class="carousel-desc">引导孩子表达思考过程，理解事件之间的因果联系</span>
+                            </div>
+                            <div class="carousel-image">
+                                <img src="images/demo/logic-5.jpg" alt="5岁引导示例">
+                            </div>
+                        </div>
+                        
+                        <!-- Slide 3 -->
+                        <div class="carousel-slide">
+                            <div class="carousel-content-top">
+                                <h4>7岁+，假设性思考</h4>
+                                <p>"如果...会怎么样呢？"</p>
+                                <span class="carousel-desc">激发深层想象力，培养批判性思维和创造力</span>
+                            </div>
+                            <div class="carousel-image">
+                                <img src="images/demo/logic-7.jpg" alt="7岁引导示例">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Carousel Controls -->
+                    <button class="carousel-btn carousel-prev" onclick="prevSlide()">❮</button>
+                    <button class="carousel-btn carousel-next" onclick="nextSlide()">❯</button>
+                    
+                    <!-- Carousel Indicators -->
+                    <div class="carousel-indicators">
+                        <span class="indicator active" onclick="goToSlide(0)"></span>
+                        <span class="indicator" onclick="goToSlide(1)"></span>
+                        <span class="indicator" onclick="goToSlide(2)"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="creative-brief" style="padding: 4rem 2rem;">
+        <div class="container">
+            <div class="brief-card fade-in" style="text-align: center;">
+                <h3 style="font-family: 'ZCOOL KuaiLe', cursive; font-size: 2rem; margin-bottom: 1rem;">
+                    准备好开始创作了吗？
+                </h3>
+                <p style="color: var(--charcoal-light); margin-bottom: 2rem;">
+                    让孩子的想象力自由绽放，与AI一起创作属于他们的故事
+                </p>
+                <a href="index.html" class="btn-primary" style="font-size: 1.2rem; padding: 1.2rem 3rem;">
+                    🚀 立即开始体验
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo-text">📚 StoryBuddy</div>
+                <p>
+                    孩子是故事的导演，AI是温柔的副导演。<br>
+                    让每一个孩子的创意都被倾听和记录。
+                </p>
+            </div>
+            <div class="footer-links">
+                <h5>产品</h5>
+                <ul>
+                    <li><a href="#features">核心功能</a></li>
+                    <li><a href="#value">产品价值</a></li>
+                    <li><a href="#architecture">技术架构</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h5>开始</h5>
+                <ul>
+                    <li><a href="index.html">立即体验</a></li>
+                    <li><a href="#brief">了解更多</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 StoryBuddy - 故事伙伴. 让孩子的想象力自由绽放.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Value tabs
+        function showValue(type) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.value-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.value-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Add active class to clicked tab and corresponding content
+            event.target.classList.add('active');
+            document.getElementById(type).classList.add('active');
+        }
+
+        // Carousel functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const indicators = document.querySelectorAll('.indicator');
+
+        function updateCarousel() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateCarousel();
+        }
+
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateCarousel();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        // Auto-advance carousel every 5 seconds
+        setInterval(nextSlide, 5000);
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

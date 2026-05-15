@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryBuddy - 故事伙伴</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+    <div class="home-container">
+        <!-- Header -->
+        <header class="home-header">
+            <div class="header-left">
+                <a href="landing.html" class="back-to-home-btn" title="返回主页">
+                    🏠 主页
+                </a>
+            </div>
+            <div class="header-center">
+                <h1>🌟 StoryBuddy - 故事伙伴</h1>
+                <p class="subtitle">孩子是故事的导演，AI是温柔的副导演</p>
+            </div>
+            <div class="header-right"></div>
+        </header>
+
+        <!-- Main content -->
+        <div class="home-content">
+            <!-- Left: Story collection -->
+            <section class="story-collection">
+                <div class="section-header">
+                    <h2>📖 我的故事集</h2>
+                </div>
+                <div class="story-grid" id="storyGrid">
+                    <!-- Story cards will be dynamically added here -->
+                </div>
+            </section>
+
+            <!-- Right: Profile card -->
+            <aside class="profile-card">
+                <div class="profile-header">
+                    <h2>👶 小作者信息</h2>
+                    <button id="editProfileBtn" class="edit-profile-icon-btn" title="修改信息">
+                        ✏️
+                    </button>
+                </div>
+                <div class="profile-content">
+                    <div class="profile-item">
+                        <span class="profile-label">👤 姓名</span>
+                        <span class="profile-value" id="displayChildName">未设置</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">🎂 年龄</span>
+                        <span class="profile-value" id="displayChildAge">未设置</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">⭐ 性别</span>
+                        <span class="profile-value" id="displayChildGender">未设置</span>
+                    </div>
+                </div>
+
+                <!-- Hidden inputs for data storage -->
+                <input type="text" id="childName" style="display: none;" />
+                <input type="number" id="childAge" style="display: none;" />
+                <input type="radio" name="gender" value="male" id="genderMale" style="display: none;">
+                <input type="radio" name="gender" value="female" id="genderFemale" style="display: none;">
+
+                <!-- Start creating button -->
+                <button id="startCreatingBtn" class="start-creating-btn">
+                    🚀 开始创作
+                </button>
+
+                <div class="profile-tips">
+                    <p>💡 创作前请先配置小作者信息</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Profile Configuration Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👶 配置小作者信息</h2>
+                <span class="modal-close">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <label for="modalChildName">
+                        <span class="label-icon">👤</span>
+                        姓名
+                    </label>
+                    <input 
+                        type="text" 
+                        id="modalChildName" 
+                        placeholder="请输入姓名"
+                        maxlength="20"
+                    />
+                </div>
+                
+                <div class="modal-field">
+                    <label for="modalChildAge">
+                        <span class="label-icon">🎂</span>
+                        年龄
+                    </label>
+                    <input 
+                        type="number" 
+                        id="modalChildAge" 
+                        placeholder="年龄"
+                        min="3"
+                        max="15"
+                    />
+                </div>
+                
+                <div class="modal-field">
+                    <label>
+                        <span class="label-icon">⭐</span>
+                        性别
+                    </label>
+                    <div class="gender-options">
+                        <label class="gender-option">
+                            <input type="radio" name="modalGender" value="male" id="modalGenderMale">
+                            <span>👦 男孩</span>
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" name="modalGender" value="female" id="modalGenderFemale">
+                            <span>👧 女孩</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modalSaveBtn" class="modal-save-btn">保存</button>
+                <button id="modalCancelBtn" class="modal-cancel-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/home.js"></script>
+</body>
+</html>
